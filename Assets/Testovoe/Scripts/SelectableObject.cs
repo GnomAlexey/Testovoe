@@ -4,40 +4,25 @@ using UnityEngine.UI;
 
 public class SelectableObject : MonoBehaviour
 {
+    private const string BaseColor = "_BaseColor";
+    private GameObject Shadow;
+    private Material Mat;
+
+    [SerializeField]
+    private Material ShadowMat;
+
+    [SerializeField]
+    private Material SelectIndicatorMat;
+
+    [SerializeField]
+    private GameObject Model;
+
     public GameObject SelectIndicator;
-    public GameObject Model;
-    public GameObject Shadow;
-    public Toggle toggle;
-
-    private Material mat;
-    public Material ShadowMat;
-    public Material SelectIndicatorMat;
-
-
-    public void Select()
+    public Toggle Toggle;
+    private void Start()
     {
-        SelectIndicator.SetActive(true);
-        toggle.isOn = true;
-
-    }
-    public void UnSelect()
-    {
-        SelectIndicator.SetActive(false);
-        toggle.isOn = false;
-    }
-
-    public void ChangeTransparency()
-    {
-        mat = Model.GetComponent<Renderer>().material;
-        Color color = mat.GetColor("_BaseColor");
-        color.a = 0.5f;
-        mat.SetColor("_BaseColor", color);
-    }
-
-    public void HideObj(bool ModelHide)
-    {
-        gameObject.SetActive(ModelHide);
-
+        CreateShadow();
+        CreateSelectIndicator();
     }
 
     private void CreateShadow()
@@ -60,9 +45,33 @@ public class SelectableObject : MonoBehaviour
         SelectIndicator.SetActive(false);
     }
 
-    private void Start()
+    public void Select()
     {
-        CreateShadow();
-        CreateSelectIndicator();
+        SelectIndicator.SetActive(true);
+        Toggle.isOn = true;
+
     }
+
+    public void UnSelect()
+    {
+        SelectIndicator.SetActive(false);
+        Toggle.isOn = false;
+    }
+
+    public void ChangeTransparency(float alpha)
+    {
+        Mat = Model.GetComponent<Renderer>().material;
+        Color color = Mat.GetColor(BaseColor);
+        color.a = alpha;
+        Mat.SetColor(BaseColor, color);
+    }
+
+    public void HideObj(bool ModelHide)
+    {
+        gameObject.SetActive(ModelHide);
+
+    }
+
+
+
 }

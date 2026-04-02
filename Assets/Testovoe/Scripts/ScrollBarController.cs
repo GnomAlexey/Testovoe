@@ -1,17 +1,17 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScrollBarController : MonoBehaviour
 {
-    public GameObject Content;
-    public RectTransform RectTransform;
-    public int G;
+    [SerializeField]
+    private GameObject Content;
+    [SerializeField]
+    private RectTransform RectTransform;
+    private int StepsDown;
 
     void Start()
     {
-        G = Content.GetComponentsInChildren<Image>().Length / 5-1;
+        StepsDown = Content.GetComponentsInChildren<Image>().Length / 5 - 8;
     }
 
     public void ScrollUp()
@@ -23,7 +23,7 @@ public class ScrollBarController : MonoBehaviour
     }
     public void ScrollDown()
     {
-        if (RectTransform.localPosition.y <= 40f *G)
+        if (RectTransform.localPosition.y <= 40f * StepsDown)
         {
             RectTransform.localPosition += new Vector3(0, +40f, 0);
         }

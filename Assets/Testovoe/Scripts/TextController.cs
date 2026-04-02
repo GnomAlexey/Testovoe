@@ -1,81 +1,71 @@
-using NUnit.Framework;
-using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class TextController : MonoBehaviour
 {
+    public List<Toggle> SelectionToggles = null;
 
-    public SelectManagment SelectManagment;
-    public List<SelectableObject> objects;
-
-    public Transform content;
-    public TMP_Text textPrefab;
-
+    [SerializeField]
+    private SelectManagment SelectManagment;
+    [SerializeField]
+    private Transform Content;
+    [SerializeField]
+    private TMP_Text TextPrefab;
+    [SerializeField]
+    private Toggle ToggPref;
+    [SerializeField]
+    private Toggle ToggPrefH;
+    [SerializeField]
+    private Image imagePref;
+    [SerializeField]
+    private GameObject images;
     public List<Toggle> togglesHide = null;
-    public List<Toggle> toggles = null;
-
-    public Toggle toggPref;
-    public Toggle toggPrefH;
-
-    public Image imagePref;
-    public GameObject images;
-
-
 
     void Start()
     {
-        objects =SelectManagment.AllObj;
-
-
         CreateList();
-        CreateTogglesH();
-        CreateToggles();
-
-
+        CreateTogglesHide();
+        CreateSelectionToggles();
     }
-    
+
     void CreateList()
     {
-        foreach (SelectableObject obj in objects)
+        foreach (SelectableObject obj in SelectManagment.AllObj)
         {
-            Toggle T = Instantiate(toggPref, transform);
-            TMP_Text newText = Instantiate(textPrefab, content);
-            newText.text = obj.name;
-            Toggle TH = Instantiate(toggPrefH, transform);
-            togglesHide.Add(TH);
-            toggles.Add(T);
-            obj.toggle = T;
+            Toggle ToggleSelect = Instantiate(ToggPref, transform);
+            TMP_Text newText = Instantiate(TextPrefab, transform);
+            Toggle ToggleHide = Instantiate(ToggPrefH, transform);
             Image image = Instantiate(imagePref, images.transform);
-
+            newText.text = obj.name;
+            togglesHide.Add(ToggleHide);
+            SelectionToggles.Add(ToggleSelect);
+            obj.Toggle = ToggleSelect;
         }
     }
 
-    void CreateToggles()
+    void CreateSelectionToggles()
     {
-        for (int i = 0; i < toggles.Count; i++)
+        for (int i = 0; i < SelectionToggles.Count; i++)
         {
             int index = i;
 
-            toggles[i].onValueChanged.AddListener((isOn) =>
+            SelectionToggles[i].onValueChanged.AddListener((isOn) =>
             {
                 if (isOn)
                 {
                     if (SelectManagment.CheckBox)
                     {
-                        objects[index].Select();
-
+                        SelectManagment.AllObj[index].Select();
                     }
-                    SelectManagment.ListOfSelected.Add(objects[index]);
+                    SelectManagment.ListOfSelected.Add(SelectManagment.AllObj[index]);
                 }
-                else { objects[index].UnSelect(); SelectManagment.ListOfSelected.Remove(objects[index]); }
+                else { SelectManagment.AllObj[index].UnSelect(); SelectManagment.ListOfSelected.Remove(SelectManagment.AllObj[index]); }
             });
         }
     }
-    void CreateTogglesH()
+    void CreateTogglesHide()
     {
         for (int i = 0; i < togglesHide.Count; i++)
         {
@@ -83,12 +73,12 @@ public class TextController : MonoBehaviour
 
             togglesHide[i].onValueChanged.AddListener((isOn) =>
             {
-                objects[index].HideObj(isOn);
+                SelectManagment.AllObj[index].HideObj(isOn);
             });
         }
     }
-    
+
 }
 
-   
+
 
