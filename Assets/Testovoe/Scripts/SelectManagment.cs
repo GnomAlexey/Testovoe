@@ -33,6 +33,7 @@ public class SelectManagment : MonoBehaviour
             {
                 ListOfSelected[0].UnSelect();
             }
+            AllHideObjects.Clear();
         }
     }
 
@@ -75,6 +76,10 @@ public class SelectManagment : MonoBehaviour
         if (!CheckBox)
         {
             foreach (SelectableObject o in AllHideObjects)
+            {
+                o.Select();
+            }
+            foreach (SelectableObject o in ListOfSelected)
             {
                 o.Select();
             }

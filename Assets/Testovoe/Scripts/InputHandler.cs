@@ -18,7 +18,7 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && SelectManagment.CheckBox)
+        if (Input.GetMouseButtonDown(0))
         {
             InputLeftClick();
         }
@@ -58,9 +58,11 @@ public class InputHandler : MonoBehaviour
             SelectManagment.EnableToSelect = false;
             SelectManagment.UnselectAll();
 
+
             if (Cursor)
             {
                 Cursor.Select();
+                if (!SelectManagment.CheckBox) { Cursor.SelectIndicator.SetActive(false); }
             }
 
         }

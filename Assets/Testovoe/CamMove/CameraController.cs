@@ -28,6 +28,7 @@ public class CameraController : MonoBehaviour
     public bool isFly = false;
     [SerializeField]
     private bool isSelected = false;
+    private Vector3 CurrentPosition;
 
 
     void Start()
@@ -69,6 +70,7 @@ public class CameraController : MonoBehaviour
         SelectManagment.EnableToSelect = false;
         CamFlyModeToggle.isOn = false;
         isSelected = false;
+        CurrentPosition = pos;
         nextpos = pos + CamDistance;
         Camera.transform.rotation = CamStartRotation;
         ZoomDis = 0;
@@ -84,7 +86,7 @@ public class CameraController : MonoBehaviour
     public void Rotate()
     {
         float mouseX = Input.GetAxis("Mouse X") * 9f;
-        Camera.transform.RotateAround(SelectManagment.ListOfSelected[0].transform.position, Vector3.up, mouseX);
+        Camera.transform.RotateAround(CurrentPosition, Vector3.up, mouseX);
         nextpos = Camera.transform.position;
     }
 
