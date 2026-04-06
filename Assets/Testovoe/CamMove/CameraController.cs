@@ -4,31 +4,33 @@ using UnityEngine.UI;
 public class CameraController : MonoBehaviour
 {
 
-    [SerializeField]
-    private SelectManagment SelectManagment;
-    [SerializeField]
-    private GameObject Camera;
-    [SerializeField]
-    private Toggle CamFlyModeToggle;
-    [SerializeField]
-    private Toggle CamRotateModeToggle;
+    [SerializeField] private SelectManagment SelectManagment;
+    [SerializeField] private GameObject Camera;
+    [SerializeField] private Toggle CamFlyModeToggle;
+    [SerializeField] private Toggle CamRotateModeToggle;
+    [SerializeField] private float MaxAngle;
+    [SerializeField] private float MinAngle;
+    [SerializeField] private bool isSelected = false;
+    [SerializeField] private float zoomSpeed = 1f;
+
+    public NewInputHandler inputHandler;
+    public Vector3 nextpos;
+    public bool isFly = false;
 
     private float distance = 1.0f;
-    public Vector3 nextpos;
+    
     private float maxheight = 10f;
 
-    private Vector3 CamDistance = new Vector3(0f, 2f, -5f);
+    private Vector3 CamDistance = new Vector3(0f, 1f, -5f);
     private Vector3 CamStartPos;
     private Quaternion CamStartRotation;
 
-    private float zoomSpeed = 1f;
-    [SerializeField]
     private float ZoomDis = 0f;
     private float ZoomMaxDis = 1f;
-    public bool isFly = false;
-    [SerializeField]
-    private bool isSelected = false;
     private Vector3 CurrentPosition;
+    private bool isRotating = false;
+    private Vector2 RightClickInput;
+    private float Axis;
 
 
     void Start()
@@ -36,33 +38,21 @@ public class CameraController : MonoBehaviour
         CamStartPos = Camera.transform.position;
         CamStartRotation = Camera.transform.rotation;
         nextpos = Camera.transform.position;
+        inputHandler.OnRightClickStarted += StartRotate;
+        inputHandler.OnRightClickCanceled += StopRotate;
+        inputHandler.OnLook += SetLookInput;
+        inputHandler.OnScroll += Zoom;
     }
     private void Update()
     {
-        Zoom();
+
         Camera.transform.position = Vector3.Lerp(Camera.transform.position, nextpos, Time.deltaTime * 10f);
-        if (Input.GetMouseButton(1) && isSelected)
+        if (isRotating && isSelected)
         {
-            Rotate();
+            RotateAround();
+            RightClickInput = Vector2.zero;
         }
-    }
-
-    public void MoveUp()
-    {
-        if (Camera.transform.position.y <= maxheight)
-        {
-
-            nextpos = Camera.transform.position + new Vector3(0f, 1f * distance, 0f);
-        }
-    }
-
-    public void MoveDown()
-    {
-        if (Camera.transform.position.y > 1)
-        {
-            nextpos = Camera.transform.position + new Vector3(0f, -1f * distance, 0f);
-        }
-
+        Zoom(Axis);
     }
 
     public void MoveToObject(Vector3 pos)
@@ -83,10 +73,10 @@ public class CameraController : MonoBehaviour
         isSelected = true;
     }
 
-    public void Rotate()
+    public void RotateAround()
     {
-        float mouseX = Input.GetAxis("Mouse X") * 9f;
-        Camera.transform.RotateAround(CurrentPosition, Vector3.up, mouseX);
+        Camera.transform.RotateAround(CurrentPosition, Camera.transform.right, -RightClickInput.y / 2);
+        Camera.transform.RotateAround(CurrentPosition, Vector3.up, RightClickInput.x / 2);
         nextpos = Camera.transform.position;
     }
 
@@ -99,9 +89,9 @@ public class CameraController : MonoBehaviour
         Camera.transform.rotation = CamStartRotation;
     }
 
-    public void Zoom()
+    public void Zoom(float Axis)
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = Axis;
 
         if (scroll > 0 && ZoomDis <= ZoomMaxDis)
         {
@@ -121,6 +111,20 @@ public class CameraController : MonoBehaviour
         SelectManagment.EnableToSelect = !CamFlyModeToggle.isOn;
         isFly = CamFlyModeToggle.isOn;
         isSelected = false;
+    }
+    private void StartRotate()
+    {
+        isRotating = true;
+    }
+
+    private void StopRotate()
+    {
+        isRotating = false;
+    }
+
+    private void SetLookInput(Vector2 input)
+    {
+        RightClickInput = input;
     }
 }
 

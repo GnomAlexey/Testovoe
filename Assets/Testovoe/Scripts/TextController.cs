@@ -21,6 +21,7 @@ public class TextController : MonoBehaviour
     private Image imagePref;
     [SerializeField]
     private GameObject images;
+    public Toggle AllSelectionToggle;
     public List<Toggle> togglesHide = null;
 
     void Start()
@@ -55,13 +56,22 @@ public class TextController : MonoBehaviour
             {
                 if (isOn)
                 {
-                    if (SelectManagment.CheckBox)
-                    {
-                        SelectManagment.AllObj[index].Select();
-                    }
+                    SelectManagment.AllObj[index].Select();
                     SelectManagment.ListOfSelected.Add(SelectManagment.AllObj[index]);
+                    if (SelectManagment.AllObj.Count == SelectManagment.ListOfSelected.Count)
+                    {
+                        AllSelectionToggle.isOn = true;
+                    }
                 }
-                else { SelectManagment.AllObj[index].UnSelect(); SelectManagment.ListOfSelected.Remove(SelectManagment.AllObj[index]); }
+                else
+                { 
+                    SelectManagment.AllObj[index].UnSelect(); 
+                    SelectManagment.ListOfSelected.Remove(SelectManagment.AllObj[index]);
+                    if (SelectManagment.ListOfSelected.Count==0)
+                    {
+                        AllSelectionToggle.isOn = false;
+                    }
+                }
             });
         }
     }

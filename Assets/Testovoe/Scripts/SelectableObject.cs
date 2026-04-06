@@ -49,7 +49,7 @@ public class SelectableObject : MonoBehaviour
     {
         SelectIndicator.SetActive(true);
         Toggle.isOn = true;
-
+        
     }
 
     public void UnSelect()

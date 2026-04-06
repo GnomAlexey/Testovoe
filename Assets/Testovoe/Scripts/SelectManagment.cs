@@ -10,7 +10,6 @@ public class SelectManagment : MonoBehaviour
 
 
     private bool ModelHide = false;
-    private List<SelectableObject> AllHideObjects = new List<SelectableObject>();
 
     [SerializeField]
     public bool EnableToSelect = true;
@@ -18,6 +17,7 @@ public class SelectManagment : MonoBehaviour
 
     [SerializeField]
     private TextController TextController;
+
 
     private void Awake()
     {
@@ -33,7 +33,6 @@ public class SelectManagment : MonoBehaviour
             {
                 ListOfSelected[0].UnSelect();
             }
-            AllHideObjects.Clear();
         }
     }
 
@@ -73,28 +72,22 @@ public class SelectManagment : MonoBehaviour
     public void HideSelect()
     {
 
-        if (!CheckBox)
+        if (TextController.AllSelectionToggle.isOn)
         {
-            foreach (SelectableObject o in AllHideObjects)
+
+            foreach (SelectableObject o in AllObj)
             {
                 o.Select();
             }
-            foreach (SelectableObject o in ListOfSelected)
-            {
-                o.Select();
-            }
-            CheckBox = true;
-            AllHideObjects.Clear();
+
         }
-        else if (CheckBox)
+        else if (!TextController.AllSelectionToggle.isOn && ListOfSelected.Count !=0)
         {
             int count = ListOfSelected.Count;
             for (int i = 0; i < count; i++)
             {
-                AllHideObjects.Add(ListOfSelected[0]);
                 ListOfSelected[0].UnSelect();
             }
-            CheckBox = false;
         }
     }
 }
