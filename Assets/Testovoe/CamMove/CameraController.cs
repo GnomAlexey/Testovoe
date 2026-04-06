@@ -52,7 +52,6 @@ public class CameraController : MonoBehaviour
             RotateAround();
             RightClickInput = Vector2.zero;
         }
-        Zoom(Axis);
     }
 
     public void MoveToObject(Vector3 pos)
